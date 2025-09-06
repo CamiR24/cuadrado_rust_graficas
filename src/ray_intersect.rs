@@ -1,5 +1,6 @@
+// src/ray_intersect.rs
 use nalgebra_glm::Vec3;
-use crate::color::Color;
+use raylib::color::Color;
 
 #[derive(Debug, Clone, Copy)]
 pub struct Material {
@@ -15,7 +16,7 @@ pub struct Intersect {
 }
 
 impl Intersect {
-    pub fn new(point: Vec3, normal: Vec3, distance: f32, material: Material) -> Self {
+    pub fn new(distance: f32, material: Material) -> Self {
         Intersect {
             distance,
             is_intersecting: true,
@@ -27,13 +28,13 @@ impl Intersect {
         Intersect {
             distance: 0.0,
             is_intersecting: false,
-            material: Material{
-              diffuse: Color::new(0, 0, 0),
+            material: Material {
+                diffuse: Color::new(0, 0, 0, 255),
             },
         }
     }
 }
 
 pub trait RayIntersect {
-    fn ray_intersect(&self, ray_origin: &Vec3, ray_direction: &Vec3) -> bool;
+    fn ray_intersect(&self, ray_origin: &Vec3, ray_direction: &Vec3) -> Intersect;
 }

@@ -1,25 +1,33 @@
-mod ray_intersect;
-
 use nalgebra_glm::Vec3;
-use ray_intersect::RayIntersect;
+use crate::ray_intersect::{RayIntersect, Intersect, Material};
 use raylib::color::Color;
 
 pub struct Cube {
     pub min: Vec3,
     pub max: Vec3,
-    pub color: Color,
+    pub material: Material,
+}
+
+impl Cube {
+    pub fn new(min: Vec3, max: Vec3, color: Color) -> Self {
+        Cube {
+            min,
+            max,
+            material: Material { diffuse: color },
+        }
+    }
 }
 
 impl RayIntersect for Cube {
-    fn ray_intersect(&self, ro: &Vec3, rd: &Vec3) -> Option<f32> {
-        let mut tmin = 0.001;   //evitar autointersección
+    fn ray_intersect(&self, ro: &Vec3, rd: &Vec3) -> Intersect {
+        let mut tmin = f32::MIN; // evitar autointersección
         let mut tmax = f32::MAX;
 
         for i in 0..3 {
             if rd[i].abs() < 1e-8 {
                 // Rayo paralelo al eje
                 if ro[i] < self.min[i] || ro[i] > self.max[i] {
-                    return None; //fuera del cubo
+                    return Intersect::empty(); // fuera del cubo
                 }
             } else {
                 let inv_d = 1.0 / rd[i];
@@ -34,11 +42,15 @@ impl RayIntersect for Cube {
                 tmax = tmax.min(t1);
 
                 if tmax < tmin {
-                    return None; //no hay solapamiento
+                    return Intersect::empty(); // no hay solapamiento
                 }
             }
         }
 
-        Some(tmin) //primer impacto válido
+        if tmin > 0.0 {
+            Intersect::new(tmin, self.material)
+        } else {
+            Intersect::empty()
+        }
     }
 }
