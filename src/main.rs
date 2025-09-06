@@ -23,7 +23,7 @@ pub fn cast_ray(ray_origin: &Vec3, ray_direction: &Vec3, objects: &[Cube]) -> Co
     }
     
     if !intersect.is_intersecting {
-        return Color::new(20, 30, 50, 255); // Fondo azul oscuro
+        return Color::new(135, 206, 235, 255);
     }
 
     // Sistema de iluminación simple pero efectivo
