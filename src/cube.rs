@@ -1,3 +1,4 @@
+// src/cube.rs - Con cálculo correcto de normales
 use nalgebra_glm::Vec3;
 use crate::ray_intersect::{RayIntersect, Intersect, Material};
 use raylib::color::Color;
@@ -19,36 +20,48 @@ impl Cube {
 }
 
 impl RayIntersect for Cube {
-    fn ray_intersect(&self, ro: &Vec3, rd: &Vec3) -> Intersect {
-        let mut tmin = f32::MIN; // evitar autointersección
-        let mut tmax = f32::MAX;
+    fn ray_intersect(&self, ray_origin: &Vec3, ray_direction: &Vec3) -> Intersect {
+        let mut t_near = f32::NEG_INFINITY;
+        let mut t_far = f32::INFINITY;
+        let mut normal = Vec3::new(0.0, 0.0, 0.0);
 
+        // Intersección con cada par de planos
         for i in 0..3 {
-            if rd[i].abs() < 1e-8 {
-                // Rayo paralelo al eje
-                if ro[i] < self.min[i] || ro[i] > self.max[i] {
-                    return Intersect::empty(); // fuera del cubo
+            if ray_direction[i].abs() < 1e-8 {
+                // Rayo paralelo a los planos
+                if ray_origin[i] < self.min[i] || ray_origin[i] > self.max[i] {
+                    return Intersect::empty();
                 }
             } else {
-                let inv_d = 1.0 / rd[i];
-                let mut t0 = (self.min[i] - ro[i]) * inv_d;
-                let mut t1 = (self.max[i] - ro[i]) * inv_d;
+                // Calcular intersecciones con los planos
+                let t1 = (self.min[i] - ray_origin[i]) / ray_direction[i];
+                let t2 = (self.max[i] - ray_origin[i]) / ray_direction[i];
 
-                if inv_d < 0.0 {
-                    std::mem::swap(&mut t0, &mut t1);
+                let (t_min, t_max) = if t1 < t2 { (t1, t2) } else { (t2, t1) };
+
+                if t_min > t_near {
+                    t_near = t_min;
+                    // Determinar la normal basada en qué plano golpeamos
+                    normal = Vec3::new(0.0, 0.0, 0.0);
+                    normal[i] = if ray_direction[i] > 0.0 { -1.0 } else { 1.0 };
                 }
 
-                tmin = tmin.max(t0);
-                tmax = tmax.min(t1);
+                if t_max < t_far {
+                    t_far = t_max;
+                }
 
-                if tmax < tmin {
-                    return Intersect::empty(); // no hay solapamiento
+                if t_near > t_far || t_far < 0.0 {
+                    return Intersect::empty();
                 }
             }
         }
 
-        if tmin > 0.0 {
-            Intersect::new(tmin, self.material)
+        // Usar la intersección más cercana que sea positiva
+        let t = if t_near > 0.001 { t_near } else { t_far };
+        
+        if t > 0.001 {
+            let hit_point = *ray_origin + *ray_direction * t;
+            Intersect::new(t, hit_point, normal, self.material)
         } else {
             Intersect::empty()
         }
