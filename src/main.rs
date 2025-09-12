@@ -3,14 +3,14 @@ use std::f32::consts::PI;
 
 mod framebuffer;
 mod ray_intersect;
-mod sphere;
+mod cube;
 mod camera;
 mod light;
 mod material;
 
 use framebuffer::Framebuffer;
 use ray_intersect::{Intersect, RayIntersect};
-use sphere::Sphere;
+use cube::Cube;
 use camera::Camera;
 use light::Light;
 use material::{Material, vector3_to_color};
@@ -100,7 +100,7 @@ fn refract(incident: &Vector3, normal: &Vector3, refractive_index: f32) -> Optio
 fn cast_shadow(
     intersect: &Intersect,
     light: &Light,
-    objects: &[Sphere],
+    objects: &[Cube],
 ) -> f32 {
     let light_dir = (light.position - intersect.point).normalized();
     let light_distance = (light.position - intersect.point).length();
@@ -120,7 +120,7 @@ fn cast_shadow(
 pub fn cast_ray(
     ray_origin: &Vector3,
     ray_direction: &Vector3,
-    objects: &[Sphere],
+    objects: &[Cube],
     light: &Light,
     depth: u32,
 ) -> Vector3 {
@@ -196,7 +196,7 @@ pub fn cast_ray(
     phong_color * (1.0 - reflectivity - transparency) + reflect_color * reflectivity + refract_color * transparency
 }
 
-pub fn render(framebuffer: &mut Framebuffer, objects: &[Sphere], camera: &Camera, light: &Light) {
+pub fn render(framebuffer: &mut Framebuffer, objects: &[Cube], camera: &Camera, light: &Light) {
     let width = framebuffer.width as f32;
     let height = framebuffer.height as f32;
     let aspect_ratio = width / height;
@@ -258,9 +258,9 @@ fn main() {
     );
 
     let objects = [
-        Sphere { center: Vector3::new(0.0, 0.0, 0.0), radius: 1.0, material: rubber },
-        Sphere { center: Vector3::new(-1.0, -1.0, 1.5), radius: 0.5, material: ivory },
-        Sphere { center: Vector3::new(-0.3, 0.3, 1.5), radius: 0.3, material: glass },
+        Cube::new(Vector3::new(0.0, 0.0, 0.0), 2.0, rubber),     // size = 2.0
+        Cube::new(Vector3::new(-1.0, -1.0, 1.5), 1.0, ivory),    // size = 1.0
+        Cube::new(Vector3::new(-0.3, 0.3, 1.5), 0.6, glass),     // size = 0.6
     ];
 
     let mut camera = Camera::new(
