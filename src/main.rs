@@ -7,13 +7,16 @@ mod cube;
 mod camera;
 mod light;
 mod material;
+mod uv_coords;      
+mod texture;       
 
 use framebuffer::Framebuffer;
 use ray_intersect::{Intersect, RayIntersect};
 use cube::Cube;
 use camera::Camera;
 use light::Light;
-use material::{Material, vector3_to_color};
+use material::{Material, vector3_to_color, color_to_vector3};
+use texture::TextureManager;
 
 const ORIGIN_BIAS: f32 = 1e-4;
 
@@ -122,6 +125,8 @@ pub fn cast_ray(
     ray_direction: &Vector3,
     objects: &[Cube],
     light: &Light,
+    //textura
+    texture_manager: &TextureManager,
     depth: u32,
 ) -> Vector3 {
     if depth > 3 {
@@ -152,6 +157,29 @@ pub fn cast_ray(
     let shadow_intensity = cast_shadow(&intersect, light, objects);
     let light_intensity = light.intensity * (1.0 - shadow_intensity);
 
+    //textura
+    let diffuse_color = if intersect.material.has_texture {
+        if let (Some(texture_char), Some(uv)) = (intersect.material.texture_char, intersect.uv) {
+            //convertir UV a coordenadas de textura (128x128)
+            let (tx, ty) = uv.to_texture_coords(128);
+            
+            //obtener color de la textura
+            let texture_color = texture_manager.get_pixel_color(texture_char, tx, ty);
+            let texture_vec = color_to_vector3(texture_color);
+            
+            //combinar textura con color difuso base
+            Vector3::new(
+                intersect.material.diffuse.x * texture_vec.x,
+                intersect.material.diffuse.y * texture_vec.y,
+                intersect.material.diffuse.z * texture_vec.z,
+            )
+        } else {
+            intersect.material.diffuse
+        }
+    } else {
+        intersect.material.diffuse
+    };
+
     let diffuse_intensity = intersect.normal.dot(light_dir).max(0.0) * light_intensity;
     let diffuse = intersect.material.diffuse * diffuse_intensity;
 
@@ -167,7 +195,7 @@ pub fn cast_ray(
     let reflect_color = if reflectivity > 0.0 {
         let reflect_dir = reflect(ray_direction, &intersect.normal).normalized();
         let reflect_origin = offset_origin(&intersect, &reflect_dir);
-        cast_ray(&reflect_origin, &reflect_dir, objects, light, depth + 1)
+        cast_ray(&reflect_origin, &reflect_dir, objects, light, texture_manager, depth + 1)
     } else {
         Vector3::zero()
     };
@@ -179,13 +207,13 @@ pub fn cast_ray(
         if let Some(refract_dir) = refract(ray_direction, &intersect.normal, intersect.material.refractive_index) {
             // If refraction is possible, cast a new ray.
             let refract_origin = offset_origin(&intersect, &refract_dir);
-            cast_ray(&refract_origin, &refract_dir, objects, light, depth + 1)
+            cast_ray(&refract_origin, &refract_dir, objects, light, texture_manager, depth + 1)
         } else {
             // Total internal reflection occurred. In this case, the light is perfectly reflected.
             // We cast a reflection ray instead of a refraction ray.
             let reflect_dir = reflect(ray_direction, &intersect.normal).normalized();
             let reflect_origin = offset_origin(&intersect, &reflect_dir);
-            cast_ray(&reflect_origin, &reflect_dir, objects, light, depth + 1)
+            cast_ray(&reflect_origin, &reflect_dir, objects, light, texture_manager, depth + 1)
         }
     } else {
         // If the material is not transparent, the refracted color is black.
@@ -196,7 +224,7 @@ pub fn cast_ray(
     phong_color * (1.0 - reflectivity - transparency) + reflect_color * reflectivity + refract_color * transparency
 }
 
-pub fn render(framebuffer: &mut Framebuffer, objects: &[Cube], camera: &Camera, light: &Light) {
+pub fn render(framebuffer: &mut Framebuffer, objects: &[Cube], camera: &Camera, light: &Light, texture_manager: &TextureManager) {
     let width = framebuffer.width as f32;
     let height = framebuffer.height as f32;
     let aspect_ratio = width / height;
@@ -215,7 +243,7 @@ pub fn render(framebuffer: &mut Framebuffer, objects: &[Cube], camera: &Camera, 
             
             let rotated_direction = camera.basis_change(&ray_direction);
 
-            let pixel_color_v3 = cast_ray(&camera.eye, &rotated_direction, objects, light, 0);
+            let pixel_color_v3 = cast_ray(&camera.eye, &rotated_direction, objects, light, texture_manager, 0);
             let pixel_color = vector3_to_color(pixel_color_v3);
 
             framebuffer.set_current_color(pixel_color);
@@ -235,6 +263,7 @@ fn main() {
         .build();
 
     let mut framebuffer = Framebuffer::new(window_width as u32, window_height as u32);
+    let texture_manager = TextureManager::new(&mut window, &thread);
 
     let rubber = Material::new(
         Vector3::new(0.3, 0.1, 0.1),
@@ -257,10 +286,28 @@ fn main() {
         1.5,
     );
 
+    let wood = Material::with_texture(
+        Vector3::new(0.3, 0.1, 0.1),
+        50.0,
+        [0.8, 0.2, 0.0, 0.0],
+        0.0,
+        'B',
+    );
+
+    let brick = Material::with_texture(
+        Vector3::new(0.3, 0.1, 0.1),
+        50.0,
+        [0.8, 0.2, 0.0, 0.0],
+        0.0,
+        'A',
+    );
+
     let objects = [
-        Cube::new(Vector3::new(0.0, 0.0, 0.0), 2.0, rubber),     // size = 2.0
-        Cube::new(Vector3::new(-1.0, -1.0, 1.5), 1.0, ivory),    // size = 1.0
-        Cube::new(Vector3::new(-0.3, 0.3, 1.5), 0.6, glass),     // size = 0.6
+        Cube::new(Vector3::new(0.0, 0.0, 0.0), 2.0, rubber),     
+        Cube::new(Vector3::new(-1.0, -1.0, 1.5), 1.0, ivory),    
+        Cube::new(Vector3::new(-0.3, 0.3, 1.5), 0.6, glass),     
+        Cube::new(Vector3::new(1.5, 0.3, 0.5), 0.5, wood),
+        Cube::new(Vector3::new(-0.3, 3.3, 2.5), 2.6, brick),
     ];
 
     let mut camera = Camera::new(
@@ -291,7 +338,7 @@ fn main() {
         }
 
         framebuffer.clear();
-        render(&mut framebuffer, &objects, &camera, &light);
+        render(&mut framebuffer, &objects, &camera, &light, &texture_manager);
         framebuffer.swap_buffers(&mut window, &thread);
     }
 }

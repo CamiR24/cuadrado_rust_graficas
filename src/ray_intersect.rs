@@ -1,5 +1,6 @@
 use raylib::prelude::Vector3;
 use crate::material::Material;
+use crate::uv_coords::UVCoordinates;
 
 #[derive(Debug, Clone, Copy)]
 #[allow(dead_code)]
@@ -9,6 +10,8 @@ pub struct Intersect {
     pub distance: f32,
     pub is_intersecting: bool,
     pub material: Material,
+    //textura
+    pub uv: Option<UVCoordinates>,
 }
 
 impl Intersect {
@@ -19,6 +22,8 @@ impl Intersect {
             distance,
             is_intersecting: true,
             material,
+            //textura
+            uv: None,
         }
     }
 
@@ -29,6 +34,8 @@ impl Intersect {
             distance: 0.0,
             is_intersecting: false,
             material: Material::black(),
+            //textura
+            uv: None,
         }
     }
 }

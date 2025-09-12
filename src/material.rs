@@ -6,6 +6,9 @@ pub struct Material {
     pub albedo: [f32; 4],
     pub specular: f32,
     pub refractive_index: f32,
+    //textura
+    pub texture_char: Option<char>, 
+    pub has_texture: bool,
 }
 
 impl Material {
@@ -15,6 +18,25 @@ impl Material {
             albedo,
             specular,
             refractive_index,
+            texture_char: None,
+            has_texture: false,
+        }
+    }
+
+    pub fn with_texture(
+        diffuse: Vector3, 
+        specular: f32, 
+        albedo: [f32; 4], 
+        refractive_index: f32, 
+        texture_char: char
+    ) -> Self {
+        Material {
+            diffuse,
+            albedo,
+            specular,
+            refractive_index,
+            texture_char: Some(texture_char),
+            has_texture: true,
         }
     }
 
@@ -24,6 +46,9 @@ impl Material {
             albedo: [0.0, 0.0, 0.0, 0.0],
             specular: 0.0,
             refractive_index: 0.0,
+            //textura
+            texture_char: None,
+            has_texture: false,
         }
     }
 }
@@ -34,5 +59,14 @@ pub fn vector3_to_color(v: Vector3) -> Color {
         (v.y * 255.0).min(255.0) as u8,
         (v.z * 255.0).min(255.0) as u8,
         255,
+    )
+}
+
+//textura
+pub fn color_to_vector3(color: Color) -> Vector3 {
+    Vector3::new(
+        color.r as f32 / 255.0,
+        color.g as f32 / 255.0,
+        color.b as f32 / 255.0,
     )
 }

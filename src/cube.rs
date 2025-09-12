@@ -1,6 +1,7 @@
 use crate::material::Material;
 use crate::ray_intersect::{Intersect, RayIntersect};
 use raylib::prelude::Vector3;
+use crate::uv_coords::calculate_cube_uv;
 
 pub struct Cube {
     pub center: Vector3,
@@ -68,7 +69,14 @@ impl RayIntersect for Cube {
         //calcular normal
         let normal = self.calculate_normal(&point);
 
-        Intersect::new(point, normal, t, self.material)
+        //calcular coordenadas UV textura
+        let uv = calculate_cube_uv(&point, &self.center, self.size, &normal);
+
+        //crear intersección con información UV
+        let mut intersect = Intersect::new(point, normal, t, self.material);
+        intersect.uv = Some(uv);
+        
+        intersect
     }
 }
 
