@@ -1,12 +1,12 @@
-// textures.rs
+//texture.rs
 
 use raylib::prelude::*;
 use std::collections::HashMap;
 use std::slice;
 
 pub struct TextureManager {
-    images: HashMap<char, Image>,       // Store images for pixel access
-    textures: HashMap<char, Texture2D>, // Store GPU textures for rendering
+    images: HashMap<char, Image>,       
+    textures: HashMap<char, Texture2D>,
 }
 
 impl TextureManager {
@@ -27,11 +27,33 @@ impl TextureManager {
             ('g', "assets/wall3.png"),
         ];
 
+        println!("Cargando texturas...");
+        
         for (ch, path) in texture_files {
-            let image = Image::load_image(path).expect(&format!("Failed to load image {}", path));
-            let texture = rl.load_texture(thread, path).expect(&format!("Failed to load texture {}", path));
-            images.insert(ch, image);
-            textures.insert(ch, texture);
+            println!("  Intentando cargar: {} -> {}", ch, path);
+            
+            // Intentar cargar imagen
+            match Image::load_image(path) {
+                Ok(image) => {
+                    println!("Imagen cargada: {}x{}", image.width, image.height);
+                    
+                    // Intentar crear textura GPU
+                    match rl.load_texture(thread, path) {
+                        Ok(texture) => {
+                            println!("Textura GPU creada");
+                            images.insert(ch, image);
+                            textures.insert(ch, texture);
+                        },
+                        Err(e) => {
+                            println!("Error creando textura GPU: {:?}", e);
+                        }
+                    }
+                },
+                Err(e) => {
+                    println!("Error cargando imagen: {:?}", e);
+                    println!("Verifica que el archivo existe");
+                }
+            }
         }
 
         TextureManager { images, textures }
@@ -48,10 +70,10 @@ impl TextureManager {
             let y = normalized_y.min(image.height as u32 - 1) as i32;
             get_pixel_color(image, x, y)
         } else {
-            // Si no hay textura, usar color sólido como respaldo
-            println!("⚠ No hay textura para '{}', usando color sólido", ch);
+            // ⚠️ ESTE ES EL CÓDIGO QUE ESTÁ EJECUTÁNDOSE AHORA
+            println!("⚠️ No hay textura para '{}', usando color sólido de respaldo", ch);
             match ch {
-                'A' => Color::new(255, 215, 0, 255),   // Gold
+                'A' => Color::new(255, 215, 0, 255),   // Gold (esto es lo que ves como "ladrillo")
                 'R' => Color::new(220, 20, 60, 255),   // Crimson
                 'V' => Color::new(50, 205, 50, 255),   // Lime Green
                 'M' => Color::new(138, 43, 226, 255),  // Blue Violet

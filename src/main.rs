@@ -125,13 +125,11 @@ pub fn cast_ray(
     ray_direction: &Vector3,
     objects: &[Cube],
     light: &Light,
-    //textura
     texture_manager: &TextureManager,
     depth: u32,
 ) -> Vector3 {
     if depth > 3 {
         return procedural_sky(*ray_direction);
-        // return SKYBOX_COLOR;
     }
 
     let mut intersect = Intersect::empty();
@@ -147,7 +145,6 @@ pub fn cast_ray(
 
     if !intersect.is_intersecting {
         return procedural_sky(*ray_direction);
-        // return SKYBOX_COLOR;
     }
 
     let light_dir = (light.position - intersect.point).normalized();
@@ -157,17 +154,17 @@ pub fn cast_ray(
     let shadow_intensity = cast_shadow(&intersect, light, objects);
     let light_intensity = light.intensity * (1.0 - shadow_intensity);
 
-    //textura
+    // CORRECCIÓN: Calcular el color difuso con textura
     let diffuse_color = if intersect.material.has_texture {
         if let (Some(texture_char), Some(uv)) = (intersect.material.texture_char, intersect.uv) {
-            //convertir UV a coordenadas de textura (128x128)
+            // Convertir UV a coordenadas de textura (128x128)
             let (tx, ty) = uv.to_texture_coords(128);
             
-            //obtener color de la textura
+            // Obtener color de la textura
             let texture_color = texture_manager.get_pixel_color(texture_char, tx, ty);
             let texture_vec = color_to_vector3(texture_color);
             
-            //combinar textura con color difuso base
+            // Combinar textura con color difuso base
             Vector3::new(
                 intersect.material.diffuse.x * texture_vec.x,
                 intersect.material.diffuse.y * texture_vec.y,
@@ -180,8 +177,9 @@ pub fn cast_ray(
         intersect.material.diffuse
     };
 
+    // CORRECCIÓN: Usar diffuse_color en lugar de intersect.material.diffuse
     let diffuse_intensity = intersect.normal.dot(light_dir).max(0.0) * light_intensity;
-    let diffuse = intersect.material.diffuse * diffuse_intensity;
+    let diffuse = diffuse_color * diffuse_intensity; // <-- CAMBIO AQUÍ
 
     let specular_intensity = view_dir.dot(reflect_dir).max(0.0).powf(intersect.material.specular) * light_intensity;
     let light_color_v3 = Vector3::new(light.color.r as f32 / 255.0, light.color.g as f32 / 255.0, light.color.b as f32 / 255.0);
@@ -203,24 +201,19 @@ pub fn cast_ray(
     // Refractions
     let transparency = intersect.material.albedo[3];
     let refract_color = if transparency > 0.0 {
-        // Calculate the refracted ray direction. This can fail (return None) in case of total internal reflection.
         if let Some(refract_dir) = refract(ray_direction, &intersect.normal, intersect.material.refractive_index) {
-            // If refraction is possible, cast a new ray.
             let refract_origin = offset_origin(&intersect, &refract_dir);
             cast_ray(&refract_origin, &refract_dir, objects, light, texture_manager, depth + 1)
         } else {
-            // Total internal reflection occurred. In this case, the light is perfectly reflected.
-            // We cast a reflection ray instead of a refraction ray.
             let reflect_dir = reflect(ray_direction, &intersect.normal).normalized();
             let reflect_origin = offset_origin(&intersect, &reflect_dir);
             cast_ray(&reflect_origin, &reflect_dir, objects, light, texture_manager, depth + 1)
         }
     } else {
-        // If the material is not transparent, the refracted color is black.
         Vector3::zero()
     };
 
-    // Combine the Phong color with the reflected and refracted colors using the material's albedo values.
+    // Combine colors
     phong_color * (1.0 - reflectivity - transparency) + reflect_color * reflectivity + refract_color * transparency
 }
 
