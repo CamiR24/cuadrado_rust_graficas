@@ -66,18 +66,13 @@ impl TextureManager {
             let y = normalized_y.min(image.height as u32 - 1) as i32;
             get_pixel_color(image, x, y)
         } else {
-            // ⚠️ ESTE ES EL CÓDIGO QUE ESTÁ EJECUTÁNDOSE AHORA
             println!("⚠️ No hay textura para '{}', usando color sólido de respaldo", ch);
             match ch {
-                'A' => Color::new(255, 215, 0, 255),   // Gold (esto es lo que ves como "ladrillo")
-                'R' => Color::new(220, 20, 60, 255),   // Crimson
-                'V' => Color::new(50, 205, 50, 255),   // Lime Green
-                'M' => Color::new(138, 43, 226, 255),  // Blue Violet
-                'B' => Color::new(30, 144, 255, 255),  // Dodger Blue
-                'T' => Color::new(64, 224, 208, 255),  // Turquoise
-                'P' => Color::new(255, 105, 180, 255), // Hot Pink
-                'N' => Color::new(255, 140, 0, 255),   // Dark Orange
-                'g' => Color::GRAY,
+                'S' => Color::new(255, 215, 0, 255),   
+                'D' => Color::new(255, 215, 0, 255),   
+                'E' => Color::new(50, 205, 50, 255),   
+                'R' => Color::new(220, 20, 60, 255),  
+                'A' => Color::new(64, 224, 208, 255),  
                 _ => Color::WHITE,
             }
         }

@@ -8,7 +8,7 @@ mod camera;
 mod light;
 mod material;
 mod uv_coords;      
-mod texture;       
+mod texture;     
 
 use framebuffer::Framebuffer;
 use ray_intersect::{Intersect, RayIntersect};
@@ -258,7 +258,7 @@ fn main() {
     let mut framebuffer = Framebuffer::new(window_width as u32, window_height as u32);
     let texture_manager = TextureManager::new(&mut window, &thread);
 
-    let rock = Material::with_texture(
+    let stone = Material::with_texture(
         Vector3::new(0.9, 0.9, 0.9),
         50.0,
         [0.8, 0.2, 0.0, 0.0],
@@ -298,12 +298,97 @@ fn main() {
         'A',
     );
 
-    let objects = [
-        Cube::new(Vector3::new(0.0, 0.0, 0.0), 2.0, rock),     
-        Cube::new(Vector3::new(-1.0, -1.0, 1.5), 1.0, diamond),    
+    let objects = [  
+        Cube::new(Vector3::new(-2.0, -1.0, 4.0), 1.0, stone),
+        Cube::new(Vector3::new(-2.0, -1.0, 3.0), 1.0, stone), 
+        Cube::new(Vector3::new(-2.0, -1.0, 2.0), 1.0, stone), 
+        Cube::new(Vector3::new(-1.0, -1.0, 2.0), 1.0, stone),
+        Cube::new(Vector3::new(-0.0, -1.0, 2.0), 1.0, stone), 
+        Cube::new(Vector3::new(1.0, -1.0, 2.0), 1.0, stone), 
+        Cube::new(Vector3::new(2.0, -1.0, 2.0), 1.0, stone),
+        Cube::new(Vector3::new(3.0, -1.0, 2.0), 1.0, stone), 
+        Cube::new(Vector3::new(3.0, -1.0, 2.0), 1.0, stone), 
+        Cube::new(Vector3::new(3.0, -1.0, 2.0), 1.0, stone),
+        Cube::new(Vector3::new(3.0, -1.0, 3.0), 1.0, stone), 
+        Cube::new(Vector3::new(3.0, -1.0, 4.0), 1.0, stone), 
+
+        Cube::new(Vector3::new(-3.0, 0.0, 4.0), 1.0, stone), 
+        Cube::new(Vector3::new(-3.0, 0.0, 3.0), 1.0, stone),
+        Cube::new(Vector3::new(-3.0, 0.0, 2.0), 1.0, stone), 
+        Cube::new(Vector3::new(-3.0, 0.0, 1.0), 1.0, stone), 
+        Cube::new(Vector3::new(-2.0, 0.0, 1.0), 1.0, stone),
+        Cube::new(Vector3::new(-1.0, 0.0, 1.0), 1.0, stone), 
+        Cube::new(Vector3::new(0.0, 0.0, 1.0), 1.0, stone), 
+        Cube::new(Vector3::new(1.0, 0.0, 1.0), 1.0, stone),
+        Cube::new(Vector3::new(2.0, 0.0, 1.0), 1.0, stone), 
+        Cube::new(Vector3::new(3.0, 0.0, 1.0), 1.0, stone), 
+        Cube::new(Vector3::new(4.0, 0.0, 1.0), 1.0, stone),
+        Cube::new(Vector3::new(4.0, 0.0, 2.0), 1.0, stone), 
+        Cube::new(Vector3::new(4.0, 0.0, 3.0), 1.0, stone), 
+        Cube::new(Vector3::new(4.0, 0.0, 4.0), 1.0, stone),
+
+        Cube::new(Vector3::new(-3.0, 1.0, 4.0), 1.0, stone), 
+        Cube::new(Vector3::new(-3.0, 1.0, 3.0), 1.0, stone),
+        Cube::new(Vector3::new(-3.0, 1.0, 2.0), 1.0, stone), 
+        Cube::new(Vector3::new(-3.0, 1.0, 1.0), 1.0, stone), 
+        Cube::new(Vector3::new(-2.0, 1.0, 1.0), 1.0, stone),
+        Cube::new(Vector3::new(-1.0, 1.0, 1.0), 1.0, stone), 
+        Cube::new(Vector3::new(0.0, 1.0, 1.0), 1.0, stone), 
+        Cube::new(Vector3::new(1.0, 1.0, 1.0), 1.0, stone),
+        Cube::new(Vector3::new(2.0, 1.0, 1.0), 1.0, stone), 
+        Cube::new(Vector3::new(3.0, 1.0, 1.0), 1.0, stone), 
+        Cube::new(Vector3::new(4.0, 1.0, 1.0), 1.0, stone),
+        Cube::new(Vector3::new(4.0, 1.0, 2.0), 1.0, stone), 
+        Cube::new(Vector3::new(4.0, 1.0, 3.0), 1.0, stone), 
+        Cube::new(Vector3::new(4.0, 1.0, 4.0), 1.0, stone),
+
+        Cube::new(Vector3::new(-3.0, 2.0, 4.0), 1.0, stone), 
+        Cube::new(Vector3::new(-3.0, 2.0, 3.0), 1.0, stone),
+        Cube::new(Vector3::new(-3.0, 2.0, 2.0), 1.0, stone), 
+        Cube::new(Vector3::new(-3.0, 2.0, 1.0), 1.0, stone), 
+        Cube::new(Vector3::new(-2.0, 2.0, 1.0), 1.0, stone),
+        Cube::new(Vector3::new(-1.0, 2.0, 1.0), 1.0, stone), 
+        Cube::new(Vector3::new(0.0, 2.0, 1.0), 1.0, stone), 
+        Cube::new(Vector3::new(1.0, 2.0, 1.0), 1.0, stone),
+        Cube::new(Vector3::new(2.0, 2.0, 1.0), 1.0, stone), 
+        Cube::new(Vector3::new(3.0, 2.0, 1.0), 1.0, stone), 
+        Cube::new(Vector3::new(4.0, 2.0, 1.0), 1.0, stone),
+        Cube::new(Vector3::new(4.0, 2.0, 2.0), 1.0, stone), 
+        Cube::new(Vector3::new(4.0, 2.0, 3.0), 1.0, stone), 
+        Cube::new(Vector3::new(4.0, 2.0, 4.0), 1.0, stone),
+
+        Cube::new(Vector3::new(-3.0, 3.0, 4.0), 1.0, stone), 
+        Cube::new(Vector3::new(-3.0, 3.0, 3.0), 1.0, stone),
+        Cube::new(Vector3::new(-3.0, 3.0, 2.0), 1.0, stone), 
+        Cube::new(Vector3::new(-3.0, 3.0, 1.0), 1.0, stone), 
+        Cube::new(Vector3::new(-2.0, 3.0, 1.0), 1.0, stone),
+        Cube::new(Vector3::new(-1.0, 3.0, 1.0), 1.0, stone), 
+        Cube::new(Vector3::new(0.0, 3.0, 1.0), 1.0, stone), 
+        Cube::new(Vector3::new(1.0, 3.0, 1.0), 1.0, stone),
+        Cube::new(Vector3::new(2.0, 3.0, 1.0), 1.0, stone), 
+        Cube::new(Vector3::new(3.0, 3.0, 1.0), 1.0, stone), 
+        Cube::new(Vector3::new(4.0, 3.0, 1.0), 1.0, stone),
+        Cube::new(Vector3::new(4.0, 3.0, 2.0), 1.0, stone), 
+        Cube::new(Vector3::new(4.0, 3.0, 3.0), 1.0, stone), 
+        Cube::new(Vector3::new(4.0, 3.0, 4.0), 1.0, stone),
+
+        Cube::new(Vector3::new(-2.0, 4.0, 4.0), 1.0, stone),
+        Cube::new(Vector3::new(-2.0, 4.0, 3.0), 1.0, stone), 
+        Cube::new(Vector3::new(-2.0, 4.0, 2.0), 1.0, stone), 
+        Cube::new(Vector3::new(-1.0, 4.0, 2.0), 1.0, stone),
+        Cube::new(Vector3::new(-0.0, 4.0, 2.0), 1.0, stone), 
+        Cube::new(Vector3::new(1.0, 4.0, 2.0), 1.0, stone), 
+        Cube::new(Vector3::new(2.0, 4.0, 2.0), 1.0, stone),
+        Cube::new(Vector3::new(3.0, 4.0, 2.0), 1.0, stone), 
+        Cube::new(Vector3::new(3.0, 4.0, 2.0), 1.0, stone), 
+        Cube::new(Vector3::new(3.0, 4.0, 2.0), 1.0, stone),
+        Cube::new(Vector3::new(3.0, 4.0, 3.0), 1.0, stone), 
+        Cube::new(Vector3::new(3.0, 4.0, 4.0), 1.0, stone), 
+
+        /*Cube::new(Vector3::new(-1.0, -1.0, 1.5), 1.0, diamond),    
         Cube::new(Vector3::new(-0.3, 0.3, 1.5), 0.6, emerald),     
         Cube::new(Vector3::new(1.5, 0.3, 0.5), 0.5, rubi),
-        Cube::new(Vector3::new(-0.3, 3.3, 2.5), 2.6, aquamarine),
+        Cube::new(Vector3::new(-0.3, 3.3, 2.5), 2.6, aquamarine), */
     ];
 
     let mut camera = Camera::new(
@@ -320,6 +405,12 @@ fn main() {
     );
 
     while !window.window_should_close() {
+        let wheel = unsafe { raylib::ffi::GetMouseWheelMove() };
+
+        if wheel != 0.0 {
+            let zoom_factor = if wheel > 0.0 { 0.9 } else { 1.1 };
+            camera.zoom(zoom_factor);
+        }
         if window.is_key_down(KeyboardKey::KEY_LEFT) {
             camera.orbit(rotation_speed, 0.0);
         }

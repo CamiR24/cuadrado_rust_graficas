@@ -112,4 +112,18 @@ impl Camera {
         // if v = (0,0,1) in camera space (pointing backward),
         // result will be -self.forward in world space
     }
+
+    pub fn zoom(&mut self, amount: f32) {
+        // Vector desde center hasta eye
+        let mut relative_pos = self.eye - self.center;
+
+        // Factor de zoom: si amount > 1 se aleja, si amount < 1 se acerca
+        relative_pos *= amount;
+
+        // Actualizamos la posición de la cámara
+        self.eye = self.center + relative_pos;
+
+        // Recalculamos los vectores base para mantener coherencia
+        self.update_basis_vectors();
+    }
 }
