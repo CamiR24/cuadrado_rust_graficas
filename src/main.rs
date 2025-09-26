@@ -8,7 +8,8 @@ mod camera;
 mod light;
 mod material;
 mod uv_coords;      
-mod texture;     
+mod texture; 
+mod scene;    
 
 use framebuffer::Framebuffer;
 use ray_intersect::{Intersect, RayIntersect};
@@ -17,6 +18,7 @@ use camera::Camera;
 use light::Light;
 use material::{Material, vector3_to_color, color_to_vector3};
 use texture::TextureManager;
+use scene::create_scene_objects;
 
 const ORIGIN_BIAS: f32 = 1e-4;
 
@@ -258,138 +260,7 @@ fn main() {
     let mut framebuffer = Framebuffer::new(window_width as u32, window_height as u32);
     let texture_manager = TextureManager::new(&mut window, &thread);
 
-    let stone = Material::with_texture(
-        Vector3::new(0.9, 0.9, 0.9),
-        50.0,
-        [0.8, 0.2, 0.0, 0.0],
-        0.0,
-        'S',
-    );
-
-    let diamond = Material::with_texture(
-        Vector3::new(0.9, 0.9, 0.9),
-        50.0,
-        [0.8, 0.2, 0.0, 0.0],
-        0.0,
-        'D',
-    );
-
-    let emerald = Material::with_texture(
-        Vector3::new(0.9, 0.9, 0.9),
-        50.0,
-        [0.8, 0.2, 0.0, 0.0],
-        0.0,
-        'E',
-    );
-
-    let rubi = Material::with_texture(
-        Vector3::new(0.9, 0.9, 0.9),
-        50.0,
-        [0.8, 0.2, 0.0, 0.0],
-        0.0,
-        'R',
-    );
-
-    let aquamarine = Material::with_texture(
-        Vector3::new(0.9, 0.9, 0.9),
-        50.0,
-        [0.8, 0.2, 0.0, 0.0],
-        0.0,
-        'A',
-    );
-
-    let objects = [  
-        Cube::new(Vector3::new(-2.0, -1.0, 4.0), 1.0, stone),
-        Cube::new(Vector3::new(-2.0, -1.0, 3.0), 1.0, stone), 
-        Cube::new(Vector3::new(-2.0, -1.0, 2.0), 1.0, stone), 
-        Cube::new(Vector3::new(-1.0, -1.0, 2.0), 1.0, stone),
-        Cube::new(Vector3::new(-0.0, -1.0, 2.0), 1.0, stone), 
-        Cube::new(Vector3::new(1.0, -1.0, 2.0), 1.0, stone), 
-        Cube::new(Vector3::new(2.0, -1.0, 2.0), 1.0, stone),
-        Cube::new(Vector3::new(3.0, -1.0, 2.0), 1.0, stone), 
-        Cube::new(Vector3::new(3.0, -1.0, 2.0), 1.0, stone), 
-        Cube::new(Vector3::new(3.0, -1.0, 2.0), 1.0, stone),
-        Cube::new(Vector3::new(3.0, -1.0, 3.0), 1.0, stone), 
-        Cube::new(Vector3::new(3.0, -1.0, 4.0), 1.0, stone), 
-
-        Cube::new(Vector3::new(-3.0, 0.0, 4.0), 1.0, stone), 
-        Cube::new(Vector3::new(-3.0, 0.0, 3.0), 1.0, stone),
-        Cube::new(Vector3::new(-3.0, 0.0, 2.0), 1.0, stone), 
-        Cube::new(Vector3::new(-3.0, 0.0, 1.0), 1.0, stone), 
-        Cube::new(Vector3::new(-2.0, 0.0, 1.0), 1.0, stone),
-        Cube::new(Vector3::new(-1.0, 0.0, 1.0), 1.0, stone), 
-        Cube::new(Vector3::new(0.0, 0.0, 1.0), 1.0, stone), 
-        Cube::new(Vector3::new(1.0, 0.0, 1.0), 1.0, stone),
-        Cube::new(Vector3::new(2.0, 0.0, 1.0), 1.0, stone), 
-        Cube::new(Vector3::new(3.0, 0.0, 1.0), 1.0, stone), 
-        Cube::new(Vector3::new(4.0, 0.0, 1.0), 1.0, stone),
-        Cube::new(Vector3::new(4.0, 0.0, 2.0), 1.0, stone), 
-        Cube::new(Vector3::new(4.0, 0.0, 3.0), 1.0, stone), 
-        Cube::new(Vector3::new(4.0, 0.0, 4.0), 1.0, stone),
-
-        Cube::new(Vector3::new(-3.0, 1.0, 4.0), 1.0, stone), 
-        Cube::new(Vector3::new(-3.0, 1.0, 3.0), 1.0, stone),
-        Cube::new(Vector3::new(-3.0, 1.0, 2.0), 1.0, stone), 
-        Cube::new(Vector3::new(-3.0, 1.0, 1.0), 1.0, stone), 
-        Cube::new(Vector3::new(-2.0, 1.0, 1.0), 1.0, stone),
-        Cube::new(Vector3::new(-1.0, 1.0, 1.0), 1.0, stone), 
-        Cube::new(Vector3::new(0.0, 1.0, 1.0), 1.0, stone), 
-        Cube::new(Vector3::new(1.0, 1.0, 1.0), 1.0, stone),
-        Cube::new(Vector3::new(2.0, 1.0, 1.0), 1.0, stone), 
-        Cube::new(Vector3::new(3.0, 1.0, 1.0), 1.0, stone), 
-        Cube::new(Vector3::new(4.0, 1.0, 1.0), 1.0, stone),
-        Cube::new(Vector3::new(4.0, 1.0, 2.0), 1.0, stone), 
-        Cube::new(Vector3::new(4.0, 1.0, 3.0), 1.0, stone), 
-        Cube::new(Vector3::new(4.0, 1.0, 4.0), 1.0, stone),
-
-        Cube::new(Vector3::new(-3.0, 2.0, 4.0), 1.0, stone), 
-        Cube::new(Vector3::new(-3.0, 2.0, 3.0), 1.0, stone),
-        Cube::new(Vector3::new(-3.0, 2.0, 2.0), 1.0, stone), 
-        Cube::new(Vector3::new(-3.0, 2.0, 1.0), 1.0, stone), 
-        Cube::new(Vector3::new(-2.0, 2.0, 1.0), 1.0, stone),
-        Cube::new(Vector3::new(-1.0, 2.0, 1.0), 1.0, stone), 
-        Cube::new(Vector3::new(0.0, 2.0, 1.0), 1.0, stone), 
-        Cube::new(Vector3::new(1.0, 2.0, 1.0), 1.0, stone),
-        Cube::new(Vector3::new(2.0, 2.0, 1.0), 1.0, stone), 
-        Cube::new(Vector3::new(3.0, 2.0, 1.0), 1.0, stone), 
-        Cube::new(Vector3::new(4.0, 2.0, 1.0), 1.0, stone),
-        Cube::new(Vector3::new(4.0, 2.0, 2.0), 1.0, stone), 
-        Cube::new(Vector3::new(4.0, 2.0, 3.0), 1.0, stone), 
-        Cube::new(Vector3::new(4.0, 2.0, 4.0), 1.0, stone),
-
-        Cube::new(Vector3::new(-3.0, 3.0, 4.0), 1.0, stone), 
-        Cube::new(Vector3::new(-3.0, 3.0, 3.0), 1.0, stone),
-        Cube::new(Vector3::new(-3.0, 3.0, 2.0), 1.0, stone), 
-        Cube::new(Vector3::new(-3.0, 3.0, 1.0), 1.0, stone), 
-        Cube::new(Vector3::new(-2.0, 3.0, 1.0), 1.0, stone),
-        Cube::new(Vector3::new(-1.0, 3.0, 1.0), 1.0, stone), 
-        Cube::new(Vector3::new(0.0, 3.0, 1.0), 1.0, stone), 
-        Cube::new(Vector3::new(1.0, 3.0, 1.0), 1.0, stone),
-        Cube::new(Vector3::new(2.0, 3.0, 1.0), 1.0, stone), 
-        Cube::new(Vector3::new(3.0, 3.0, 1.0), 1.0, stone), 
-        Cube::new(Vector3::new(4.0, 3.0, 1.0), 1.0, stone),
-        Cube::new(Vector3::new(4.0, 3.0, 2.0), 1.0, stone), 
-        Cube::new(Vector3::new(4.0, 3.0, 3.0), 1.0, stone), 
-        Cube::new(Vector3::new(4.0, 3.0, 4.0), 1.0, stone),
-
-        Cube::new(Vector3::new(-2.0, 4.0, 4.0), 1.0, stone),
-        Cube::new(Vector3::new(-2.0, 4.0, 3.0), 1.0, stone), 
-        Cube::new(Vector3::new(-2.0, 4.0, 2.0), 1.0, stone), 
-        Cube::new(Vector3::new(-1.0, 4.0, 2.0), 1.0, stone),
-        Cube::new(Vector3::new(-0.0, 4.0, 2.0), 1.0, stone), 
-        Cube::new(Vector3::new(1.0, 4.0, 2.0), 1.0, stone), 
-        Cube::new(Vector3::new(2.0, 4.0, 2.0), 1.0, stone),
-        Cube::new(Vector3::new(3.0, 4.0, 2.0), 1.0, stone), 
-        Cube::new(Vector3::new(3.0, 4.0, 2.0), 1.0, stone), 
-        Cube::new(Vector3::new(3.0, 4.0, 2.0), 1.0, stone),
-        Cube::new(Vector3::new(3.0, 4.0, 3.0), 1.0, stone), 
-        Cube::new(Vector3::new(3.0, 4.0, 4.0), 1.0, stone), 
-
-        /*Cube::new(Vector3::new(-1.0, -1.0, 1.5), 1.0, diamond),    
-        Cube::new(Vector3::new(-0.3, 0.3, 1.5), 0.6, emerald),     
-        Cube::new(Vector3::new(1.5, 0.3, 0.5), 0.5, rubi),
-        Cube::new(Vector3::new(-0.3, 3.3, 2.5), 2.6, aquamarine), */
-    ];
+    let objects = create_scene_objects();
 
     let mut camera = Camera::new(
         Vector3::new(0.0, 0.0, 5.0),
