@@ -16,15 +16,11 @@ impl TextureManager {
 
         // Map characters to texture file paths
         let texture_files = vec![
-            ('A', "assets/wall5.png"),
-            ('R', "assets/wall5.png"),
-            ('V', "assets/wall6.png"),
-            ('M', "assets/wall6.png"),
-            ('B', "assets/wall1.png"),
-            ('T', "assets/wall1.png"),
-            ('P', "assets/wall4.png"),
-            ('N', "assets/wall4.png"),
-            ('g', "assets/wall3.png"),
+            ('S', "assets/rock.png"),
+            ('D', "assets/diamond.png"),
+            ('E', "assets/emerald.png"),
+            ('R', "assets/rubi.png"),
+            ('A', "assets/aquamarine.png"),
         ];
 
         println!("Cargando texturas...");

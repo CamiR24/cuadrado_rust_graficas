@@ -258,37 +258,40 @@ fn main() {
     let mut framebuffer = Framebuffer::new(window_width as u32, window_height as u32);
     let texture_manager = TextureManager::new(&mut window, &thread);
 
-    let rubber = Material::new(
-        Vector3::new(0.3, 0.1, 0.1),
-        10.0,
-        [0.9, 0.1, 0.0, 0.0],
-        0.0,
-    );
-
-    let ivory = Material::new(
-        Vector3::new(0.4, 0.4, 0.3),
-        50.0,
-        [0.6, 0.3, 0.1, 0.0],
-        0.0,
-    );
-
-    let glass = Material::new(
-        Vector3::new(0.6, 0.7, 0.8),
-        125.0,
-        [0.0, 0.5, 0.1, 0.8],
-        1.5,
-    );
-
-    let wood = Material::with_texture(
-        Vector3::new(0.3, 0.1, 0.1),
+    let rock = Material::with_texture(
+        Vector3::new(0.9, 0.9, 0.9),
         50.0,
         [0.8, 0.2, 0.0, 0.0],
         0.0,
-        'B',
+        'S',
     );
 
-    let brick = Material::with_texture(
-        Vector3::new(0.3, 0.1, 0.1),
+    let diamond = Material::with_texture(
+        Vector3::new(0.9, 0.9, 0.9),
+        50.0,
+        [0.8, 0.2, 0.0, 0.0],
+        0.0,
+        'D',
+    );
+
+    let emerald = Material::with_texture(
+        Vector3::new(0.9, 0.9, 0.9),
+        50.0,
+        [0.8, 0.2, 0.0, 0.0],
+        0.0,
+        'E',
+    );
+
+    let rubi = Material::with_texture(
+        Vector3::new(0.9, 0.9, 0.9),
+        50.0,
+        [0.8, 0.2, 0.0, 0.0],
+        0.0,
+        'R',
+    );
+
+    let aquamarine = Material::with_texture(
+        Vector3::new(0.9, 0.9, 0.9),
         50.0,
         [0.8, 0.2, 0.0, 0.0],
         0.0,
@@ -296,11 +299,11 @@ fn main() {
     );
 
     let objects = [
-        Cube::new(Vector3::new(0.0, 0.0, 0.0), 2.0, rubber),     
-        Cube::new(Vector3::new(-1.0, -1.0, 1.5), 1.0, ivory),    
-        Cube::new(Vector3::new(-0.3, 0.3, 1.5), 0.6, glass),     
-        Cube::new(Vector3::new(1.5, 0.3, 0.5), 0.5, wood),
-        Cube::new(Vector3::new(-0.3, 3.3, 2.5), 2.6, brick),
+        Cube::new(Vector3::new(0.0, 0.0, 0.0), 2.0, rock),     
+        Cube::new(Vector3::new(-1.0, -1.0, 1.5), 1.0, diamond),    
+        Cube::new(Vector3::new(-0.3, 0.3, 1.5), 0.6, emerald),     
+        Cube::new(Vector3::new(1.5, 0.3, 0.5), 0.5, rubi),
+        Cube::new(Vector3::new(-0.3, 3.3, 2.5), 2.6, aquamarine),
     ];
 
     let mut camera = Camera::new(
