@@ -269,10 +269,14 @@ fn main() {
     );
     let rotation_speed = PI / 100.0;
 
+    let base_light_position = Vector3::new(0.5, -0.5, 2.5);
+    let base_light_intensity = 2.5;
+    let mut time_accumulator = 0.0;
+
     let light = Light::new(
-        Vector3::new(1.0, -1.0, 5.0),
+        Vector3::new(0.5, 1.5, 5.0),
         Color::new(255, 255, 255, 255),
-        1.5,
+        4.5,
     );
 
     while !window.window_should_close() {
@@ -294,6 +298,7 @@ fn main() {
         if window.is_key_down(KeyboardKey::KEY_DOWN) {
             camera.orbit(0.0, rotation_speed);
         }
+
 
         framebuffer.clear();
         render(&mut framebuffer, &objects, &camera, &light, &texture_manager);
