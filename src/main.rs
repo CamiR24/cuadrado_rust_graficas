@@ -156,17 +156,11 @@ pub fn cast_ray(
     let shadow_intensity = cast_shadow(&intersect, light, objects);
     let light_intensity = light.intensity * (1.0 - shadow_intensity);
 
-    // CORRECCIÓN: Calcular el color difuso con textura
     let diffuse_color = if intersect.material.has_texture {
         if let (Some(texture_char), Some(uv)) = (intersect.material.texture_char, intersect.uv) {
-            // Convertir UV a coordenadas de textura (128x128)
             let (tx, ty) = uv.to_texture_coords(128);
-            
-            // Obtener color de la textura
             let texture_color = texture_manager.get_pixel_color(texture_char, tx, ty);
             let texture_vec = color_to_vector3(texture_color);
-            
-            // Combinar textura con color difuso base
             Vector3::new(
                 intersect.material.diffuse.x * texture_vec.x,
                 intersect.material.diffuse.y * texture_vec.y,
@@ -179,19 +173,26 @@ pub fn cast_ray(
         intersect.material.diffuse
     };
 
-    // CORRECCIÓN: Usar diffuse_color en lugar de intersect.material.diffuse
     let diffuse_intensity = intersect.normal.dot(light_dir).max(0.0) * light_intensity;
-    let diffuse = diffuse_color * diffuse_intensity; // <-- CAMBIO AQUÍ
+    let diffuse = diffuse_color * diffuse_intensity;
 
     let specular_intensity = view_dir.dot(reflect_dir).max(0.0).powf(intersect.material.specular) * light_intensity;
-    let light_color_v3 = Vector3::new(light.color.r as f32 / 255.0, light.color.g as f32 / 255.0, light.color.b as f32 / 255.0);
+    let light_color_v3 = Vector3::new(
+        light.color.r as f32 / 255.0,
+        light.color.g as f32 / 255.0,
+        light.color.b as f32 / 255.0,
+    );
     let specular = light_color_v3 * specular_intensity;
 
     let albedo = intersect.material.albedo;
-    let phong_color = diffuse * albedo[0] + specular * albedo[1];
 
-    // Reflections
-    let reflectivity = intersect.material.albedo[2];
+    let phong_color = if albedo[3] > 0.0 {
+        Vector3::zero()
+    } else {
+        diffuse * albedo[0] + specular * albedo[1]
+    };
+
+    let reflectivity = albedo[2];
     let reflect_color = if reflectivity > 0.0 {
         let reflect_dir = reflect(ray_direction, &intersect.normal).normalized();
         let reflect_origin = offset_origin(&intersect, &reflect_dir);
@@ -200,13 +201,15 @@ pub fn cast_ray(
         Vector3::zero()
     };
 
-    // Refractions
-    let transparency = intersect.material.albedo[3];
+    let transparency = albedo[3];
     let refract_color = if transparency > 0.0 {
         if let Some(refract_dir) = refract(ray_direction, &intersect.normal, intersect.material.refractive_index) {
             let refract_origin = offset_origin(&intersect, &refract_dir);
-            cast_ray(&refract_origin, &refract_dir, objects, light, texture_manager, depth + 1)
+            let inner_color = cast_ray(&refract_origin, &refract_dir, objects, light, texture_manager, depth + 1);
+            // aplicar color del vidrio como tinte
+            inner_color * diffuse_color
         } else {
+            // reflexión total interna
             let reflect_dir = reflect(ray_direction, &intersect.normal).normalized();
             let reflect_origin = offset_origin(&intersect, &reflect_dir);
             cast_ray(&reflect_origin, &reflect_dir, objects, light, texture_manager, depth + 1)
@@ -215,8 +218,9 @@ pub fn cast_ray(
         Vector3::zero()
     };
 
-    // Combine colors
-    phong_color * (1.0 - reflectivity - transparency) + reflect_color * reflectivity + refract_color * transparency
+    phong_color * (1.0 - reflectivity - transparency)
+        + reflect_color * reflectivity
+        + refract_color * transparency
 }
 
 pub fn render(
@@ -294,7 +298,7 @@ fn main() {
     let light = Light::new(
         Vector3::new(0.5, 1.5, 6.0),
         Color::new(255, 255, 255, 255),
-        4.5,
+        7.5,
     );
 
     while !window.window_should_close() {

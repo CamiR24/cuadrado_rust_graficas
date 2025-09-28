@@ -47,10 +47,10 @@ pub fn create_scene_objects() -> Vec<Cube> {
     );
 
     let glass = Material::new(
-        Vector3::new(0.9, 0.9, 0.9),
+        Vector3::new(0.9, 0.9, 0.9), 
         200.0,
-        [0.0, 0.5, 0.1, 0.8],
-        1.5,
+        [0.0, 0.0, 0.05, 0.95],      
+        1.5,                          
     );
 
     let mut objects: Vec<Cube> = Vec::new();
@@ -141,10 +141,16 @@ pub fn create_scene_objects() -> Vec<Cube> {
     objects.push(Cube::new(Vector3::new(1.0, 6.0, 4.0), size, stone));
 
     //pantalla de vidrio
-    objects.push(Cube::new(Vector3::new(0.0, 5.0, 4.0), size, glass));
-    objects.push(Cube::new(Vector3::new(1.0, 5.0, 4.0), size, glass));
+    objects.push(Cube::new(Vector3::new(-0.5, 5.0, 4.5), 0.5, glass));
+    objects.push(Cube::new(Vector3::new(0.0, 5.0, 4.5), 0.5, glass));
+    objects.push(Cube::new(Vector3::new(0.5, 5.0, 4.5), 0.5, glass));
+    objects.push(Cube::new(Vector3::new(1.0, 5.0, 4.5), 0.5, glass));
+    objects.push(Cube::new(Vector3::new(-0.5, 4.5, 4.5), 0.5, glass));
+    objects.push(Cube::new(Vector3::new(0.0, 4.5, 4.5), 0.5, glass));
+    objects.push(Cube::new(Vector3::new(0.5, 4.5, 4.5), 0.5, glass));
+    objects.push(Cube::new(Vector3::new(1.0, 4.5, 4.5), 0.5, glass));
 
-    objects.push(Cube::new(Vector3::new(0.0, 4.0, 4.0), size, glass));
+    /*objects.push(Cube::new(Vector3::new(0.0, 4.0, 4.0), size, glass));
     objects.push(Cube::new(Vector3::new(1.0, 4.0, 4.0), size, glass));
     objects.push(Cube::new(Vector3::new(-1.0, 4.0, 4.0), size, glass));
     objects.push(Cube::new(Vector3::new(2.0, 4.0, 4.0), size, glass));
@@ -161,7 +167,7 @@ pub fn create_scene_objects() -> Vec<Cube> {
     objects.push(Cube::new(Vector3::new(-1.0, 2.0, 4.0), size, glass));
     objects.push(Cube::new(Vector3::new(2.0, 2.0, 4.0), size, glass));
     objects.push(Cube::new(Vector3::new(-2.0, 2.0, 4.0), size, glass));
-    objects.push(Cube::new(Vector3::new(3.0, 2.0, 4.0), size, glass));
+    objects.push(Cube::new(Vector3::new(3.0, 2.0, 4.0), size, glass));*/
 
     //DIAMANTES - ESTRICTAMENTE dentro del espacio hueco
     objects.push(Cube::new(Vector3::new(-1.8, -0.8, 2.5), 0.4, diamond)); // Pared izquierda
