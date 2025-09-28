@@ -141,33 +141,101 @@ pub fn create_scene_objects() -> Vec<Cube> {
     objects.push(Cube::new(Vector3::new(1.0, 6.0, 4.0), size, stone));
 
     //pantalla de vidrio
-    objects.push(Cube::new(Vector3::new(-0.5, 5.0, 4.5), 0.5, glass));
-    objects.push(Cube::new(Vector3::new(0.0, 5.0, 4.5), 0.5, glass));
-    objects.push(Cube::new(Vector3::new(0.5, 5.0, 4.5), 0.5, glass));
-    objects.push(Cube::new(Vector3::new(1.0, 5.0, 4.5), 0.5, glass));
-    objects.push(Cube::new(Vector3::new(-0.5, 4.5, 4.5), 0.5, glass));
-    objects.push(Cube::new(Vector3::new(0.0, 4.5, 4.5), 0.5, glass));
-    objects.push(Cube::new(Vector3::new(0.5, 4.5, 4.5), 0.5, glass));
-    objects.push(Cube::new(Vector3::new(1.0, 4.5, 4.5), 0.5, glass));
+    objects.push(Cube::new(Vector3::new(-0.25, 5.25, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 0.25, 5.25, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 0.75, 5.25, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 1.25, 5.25, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 1.75, 5.25, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 2.25, 5.25, 4.25), 0.5, glass));
 
-    /*objects.push(Cube::new(Vector3::new(0.0, 4.0, 4.0), size, glass));
-    objects.push(Cube::new(Vector3::new(1.0, 4.0, 4.0), size, glass));
-    objects.push(Cube::new(Vector3::new(-1.0, 4.0, 4.0), size, glass));
-    objects.push(Cube::new(Vector3::new(2.0, 4.0, 4.0), size, glass));
+    objects.push(Cube::new(Vector3::new(-0.25, 4.75, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 0.25, 4.75, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 0.75, 4.75, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 1.25, 4.75, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 1.75, 4.75, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 2.25, 4.75, 4.25), 0.5, glass));
 
-    objects.push(Cube::new(Vector3::new(0.0, 3.0, 4.0), size, glass));
-    objects.push(Cube::new(Vector3::new(1.0, 3.0, 4.0), size, glass));
-    objects.push(Cube::new(Vector3::new(-1.0, 3.0, 4.0), size, glass));
-    objects.push(Cube::new(Vector3::new(2.0, 3.0, 4.0), size, glass));
-    objects.push(Cube::new(Vector3::new(-2.0, 3.0, 4.0), size, glass));
-    objects.push(Cube::new(Vector3::new(3.0, 3.0, 4.0), size, glass));
+    objects.push(Cube::new(Vector3::new(-1.25, 4.25, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new(-0.75, 4.25, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new(-0.25, 4.25, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 0.25, 4.25, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 0.75, 4.25, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 1.25, 4.25, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 1.75, 4.25, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 2.25, 4.25, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 2.75, 4.25, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 3.25, 4.25, 4.25), 0.5, glass));
 
-    objects.push(Cube::new(Vector3::new(0.0, 2.0, 4.0), size, glass));
-    objects.push(Cube::new(Vector3::new(1.0, 2.0, 4.0), size, glass));
-    objects.push(Cube::new(Vector3::new(-1.0, 2.0, 4.0), size, glass));
-    objects.push(Cube::new(Vector3::new(2.0, 2.0, 4.0), size, glass));
-    objects.push(Cube::new(Vector3::new(-2.0, 2.0, 4.0), size, glass));
-    objects.push(Cube::new(Vector3::new(3.0, 2.0, 4.0), size, glass));*/
+    objects.push(Cube::new(Vector3::new(-1.25, 3.75, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new(-0.75, 3.75, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new(-0.25, 3.75, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 0.25, 3.75, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 0.75, 3.75, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 1.25, 3.75, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 1.75, 3.75, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 2.25, 3.75, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 2.75, 3.75, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 3.25, 3.75, 4.25), 0.5, glass));
+
+    objects.push(Cube::new(Vector3::new(-2.25, 3.25, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new(-1.75, 3.25, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new(-1.25, 3.25, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new(-0.75, 3.25, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new(-0.25, 3.25, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 0.25, 3.25, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 0.75, 3.25, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 1.25, 3.25, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 1.75, 3.25, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 2.25, 3.25, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 2.75, 3.25, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 3.25, 3.25, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 3.75, 3.25, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 4.25, 3.25, 4.25), 0.5, glass));
+
+    objects.push(Cube::new(Vector3::new(-2.25, 2.75, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new(-1.75, 2.75, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new(-1.25, 2.75, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new(-0.75, 2.75, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new(-0.25, 2.75, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 0.25, 2.75, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 0.75, 2.75, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 1.25, 2.75, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 1.75, 2.75, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 2.25, 2.75, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 2.75, 2.75, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 3.25, 2.75, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 3.75, 2.75, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 4.25, 2.75, 4.25), 0.5, glass));
+
+    objects.push(Cube::new(Vector3::new(-2.25, 2.25, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new(-1.75, 2.25, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new(-1.25, 2.25, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new(-0.75, 2.25, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new(-0.25, 2.25, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 0.25, 2.25, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 0.75, 2.25, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 1.25, 2.25, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 1.75, 2.25, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 2.25, 2.25, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 2.75, 2.25, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 3.25, 2.25, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 3.75, 2.25, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 4.25, 2.25, 4.25), 0.5, glass));
+
+    objects.push(Cube::new(Vector3::new(-2.25, 1.75, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new(-1.75, 1.75, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new(-1.25, 1.75, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new(-0.75, 1.75, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new(-0.25, 1.75, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 0.25, 1.75, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 0.75, 1.75, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 1.25, 1.75, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 1.75, 1.75, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 2.25, 1.75, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 2.75, 1.75, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 3.25, 1.75, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 3.75, 1.75, 4.25), 0.5, glass));
+    objects.push(Cube::new(Vector3::new( 4.25, 1.75, 4.25), 0.5, glass));
 
     //DIAMANTES - ESTRICTAMENTE dentro del espacio hueco
     objects.push(Cube::new(Vector3::new(-1.8, -0.8, 2.5), 0.4, diamond)); // Pared izquierda
