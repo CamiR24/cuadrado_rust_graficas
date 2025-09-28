@@ -22,28 +22,27 @@ use scene::create_scene_objects;
 
 const ORIGIN_BIAS: f32 = 1e-4;
 
-fn procedural_sky(dir: Vector3) -> Vector3 {
+fn cave_skybox(dir: Vector3) -> Vector3 {
     let d = dir.normalized();
-    let t = (d.y + 1.0) * 0.5; // map y [-1,1] → [0,1]
+    
+    let theta = d.y.acos(); 
+    let phi = d.z.atan2(d.x); 
+    
+    let u = (phi + std::f32::consts::PI) / (2.0 * std::f32::consts::PI); 
+    let v = theta / std::f32::consts::PI; 
+    
+    let ceiling = Vector3::new(0.05, 0.08, 0.15);  
+    let walls = Vector3::new(0.03, 0.05, 0.08);    
+    let floor = Vector3::new(0.08, 0.05, 0.03);    
 
-    let green = Vector3::new(0.1, 0.6, 0.2); // grass green
-    let white = Vector3::new(1.0, 1.0, 1.0); // horizon haze
-    let blue = Vector3::new(0.3, 0.5, 1.0);  // sky blue
-
-    if t < 0.54 {
-        // Bottom → fade green to white
-        let k = t / 0.55;
-        green * (1.0 - k) + white * k
-    } else if t < 0.55 {
-        // Around horizon → mostly white
-        white
-    } else if t < 0.8 {
-        // Fade white to blue
-        let k = (t - 0.55) / (0.25);
-        white * (1.0 - k) + blue * k
+    let noise = (u * 20.0).sin() * (v * 15.0).cos() * 0.1;
+    
+    if v < 0.3 {
+        ceiling + Vector3::new(noise, noise * 0.5, noise * 2.0)
+    } else if v > 0.7 {
+        floor + Vector3::new(noise * 2.0, noise, noise * 0.5)
     } else {
-        // Upper sky → solid blue
-        blue
+        walls + Vector3::new(noise, noise, noise)
     }
 }
 
@@ -131,7 +130,7 @@ pub fn cast_ray(
     depth: u32,
 ) -> Vector3 {
     if depth > 3 {
-        return procedural_sky(*ray_direction);
+        return cave_skybox(*ray_direction);
     }
 
     let mut intersect = Intersect::empty();
@@ -146,7 +145,7 @@ pub fn cast_ray(
     }
 
     if !intersect.is_intersecting {
-        return procedural_sky(*ray_direction);
+        return cave_skybox(*ray_direction);
     }
 
     let light_dir = (light.position - intersect.point).normalized();
@@ -274,7 +273,7 @@ fn main() {
     let mut time_accumulator = 0.0;
 
     let light = Light::new(
-        Vector3::new(0.5, 1.5, 5.0),
+        Vector3::new(0.5, 1.5, 6.0),
         Color::new(255, 255, 255, 255),
         4.5,
     );
