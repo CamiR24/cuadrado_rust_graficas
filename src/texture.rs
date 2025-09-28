@@ -108,3 +108,6 @@ fn get_pixel_color(image: &Image, x: i32, y: i32) -> Color {
         Color::new(data[idx], data[idx + 1], data[idx + 2], data[idx + 3])
     }
 }
+
+unsafe impl Send for TextureManager {}
+unsafe impl Sync for TextureManager {}

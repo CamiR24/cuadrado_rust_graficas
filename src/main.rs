@@ -1,5 +1,6 @@
 use raylib::prelude::*;
 use std::f32::consts::PI;
+use rayon::prelude::*;
 
 mod framebuffer;
 mod ray_intersect;
@@ -218,31 +219,49 @@ pub fn cast_ray(
     phong_color * (1.0 - reflectivity - transparency) + reflect_color * reflectivity + refract_color * transparency
 }
 
-pub fn render(framebuffer: &mut Framebuffer, objects: &[Cube], camera: &Camera, light: &Light, texture_manager: &TextureManager) {
-    let width = framebuffer.width as f32;
-    let height = framebuffer.height as f32;
-    let aspect_ratio = width / height;
+pub fn render(
+    framebuffer: &mut Framebuffer,
+    objects: &[Cube],
+    camera: &Camera,
+    light: &Light,
+    texture_manager: &TextureManager,
+) {
+    let width = framebuffer.width as usize;
+    let height = framebuffer.height as usize;
+
+    let aspect_ratio = width as f32 / height as f32;
     let fov = PI / 3.0;
     let perspective_scale = (fov * 0.5).tan();
 
-    for y in 0..framebuffer.height {
-        for x in 0..framebuffer.width {
-            let screen_x = (2.0 * x as f32) / width - 1.0;
-            let screen_y = -(2.0 * y as f32) / height + 1.0;
+    // Creamos un buffer temporal para todos los píxeles
+    let pixels: Vec<Color> = (0..height * width)
+        .into_par_iter() // <- Rayon aquí paraleliza
+        .map(|i| {
+            let x = i % width;
+            let y = i / width;
+
+            let screen_x = (2.0 * x as f32) / width as f32 - 1.0;
+            let screen_y = -(2.0 * y as f32) / height as f32 + 1.0;
 
             let screen_x = screen_x * aspect_ratio * perspective_scale;
             let screen_y = screen_y * perspective_scale;
 
             let ray_direction = Vector3::new(screen_x, screen_y, -1.0).normalized();
-            
             let rotated_direction = camera.basis_change(&ray_direction);
 
-            let pixel_color_v3 = cast_ray(&camera.eye, &rotated_direction, objects, light, texture_manager, 0);
-            let pixel_color = vector3_to_color(pixel_color_v3);
+            let pixel_color_v3 =
+                cast_ray(&camera.eye, &rotated_direction, objects, light, texture_manager, 0);
 
-            framebuffer.set_current_color(pixel_color);
-            framebuffer.set_pixel(x, y);
-        }
+            vector3_to_color(pixel_color_v3)
+        })
+        .collect();
+
+    // Copiamos el buffer al framebuffer en un paso secuencial
+    for (i, color) in pixels.into_iter().enumerate() {
+        let x = (i % width) as u32;
+        let y = (i / width) as u32;
+        framebuffer.set_current_color(color);
+        framebuffer.set_pixel(x, y);
     }
 }
 
